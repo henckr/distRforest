@@ -26,7 +26,7 @@ devtools::install_github('RoelHenckaerts/distRforest')
 library(rpart)
 ```
 
-#### Option 2 (download source files and build the package)
+#### Option 2 (download source files and build the package yourself)
 Download the code such that you get the folder 'distRforest-master' containing all the source files.
 Change the working directory to the location of this folder. You can build the package and install it as follows:
 ```
@@ -35,5 +35,34 @@ install.packages(list.files(pattern='^rpart.*tar.gz$'), repos = NULL)
 library(rpart)
 ```
 The first line works on Mac OS, for Windows you will need Rtools.
+
+
+
+## How to use
+There is no help documentation available on the added features, so I explain all the necessary information here.
+
+#### Gamma and Lognormal regression trees
+To build a regression tree with the Gamma or Lognormal deviance as loss function, invoke the _rpart_ function as follows:
+```
+rpart(formula, data, method = 'gamma') # for Gamma trees
+rpart(formula, data, method = 'lognormal') # for Lognormal trees
+```
+
+#### Random forest
+The random forest function looks like this:
+```
+rforest <- function(formula, data, weights = NULL, method, parms = NULL, control = NULL, ncand, ntrees, subsample = 1)
+```
+The _rforest_ function contains three new parameters compared to the _rpart_ fucntion:
+- ncand: the number of variables to consider at each split (defaults to all availabe variables if not set).
+- ntrees: the number of trees to build in the forest.
+- subsample: a fraction specifying which proportion of the original data size we want to use to build each tree. This should be a number in the interval (0,1].
+
+The output of the _rforest_ function is a list containing all the individual trees. If you only care about predictions and variable importance, you can reduce the memory footprint drastically in the following way:
+```
+forest_fit <- rforest(...)
+for(i in 1:length(forest_fit)) for(x in c('y','where','call','cptable','parms','control','functions','numresp','ordered')) forest_fit[[i]][[x]] <- NULL
+```
+
 
 
