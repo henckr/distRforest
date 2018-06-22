@@ -1,6 +1,14 @@
 # distRforest
 R implementation for random forests with distribution-based loss functions
 
+This is an extension of the **rpart** package, which is on [CRAN](https://cran.r-project.org/web/packages/rpart/index.html), and has the original source code on [GitHub](https://github.com/cran/rpart). By no means is this meant to be a new R package. This is merely an extension of the **rpart** package for specific use-cases. The original rpart functionality stays valid and copyright belongs to the authors Terry Therneau, Beth Atkinson and Brian Ripley.
+
+I added two specific features to this package:
+1. Develop regression trees with the Lognormal and Gamma deviance as loss functions (besides MSE and Poisson deviance which were already implemented in the original package).
+2. Build random forests from these regression trees.
+
+
+
 ## How to install
 Remove the package **rpart** from your library if you have installed it before:
 ```
