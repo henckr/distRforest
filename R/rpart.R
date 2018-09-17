@@ -3,7 +3,7 @@
 #
 rpart <-
     function(formula, data, weights, subset, na.action = na.rpart, method,
-             model = FALSE, x = FALSE, y = TRUE, parms, control, cost, ncand, seed, ...)
+             model = FALSE, x = FALSE, y = TRUE, parms, control, cost, ncand, seed, redmem = FALSE, ...)
 {
     Call <- match.call()
     if (is.data.frame(model)) {
@@ -297,6 +297,7 @@ rpart <-
     if (!is.null(attr(m, "na.action"))) ans$na.action <- attr(m, "na.action")
     if (!is.null(xlevels)) attr(ans, "xlevels") <- xlevels
     if (method == "class") attr(ans, "ylevels") <- init$ylevels
+    if (redmem) for(x in c('y','where','call','cptable','parms','control','functions','numresp','ordered')) ans[[x]] <- NULL
     class(ans) <- "rpart"
     ans
 }
