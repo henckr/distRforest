@@ -5,7 +5,7 @@ rforest <- function(formula, data, weights = NULL, method, parms = NULL, control
   subsamp <- subsample
   # Collect the arguments for rpart in a list
   rpart_args <- list('formula' = formula,
-                     'data' = substitute(data[sample.int(nrow(data), size = subsamp*nrow(data), replace = subsamp < 1)]),
+                     'data' = substitute(data[sample.int(nrow(data), size = subsamp*nrow(data), replace = subsamp < 1),]),
                      'weights' = unname(as.list(match.call())[['weights']]),
                      'method' = method,
                      'control' = control,
