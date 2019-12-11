@@ -74,7 +74,7 @@ rpart <-
             get(paste("rpart", method, sep = "."),
                 envir = environment())(Y, offset, parms, wt)
         ## avoid saving environment on fitted objects
-        ns <- asNamespace("rpart")
+        ns <- asNamespace("distRforest")
         if (!is.null(init$print)) environment(init$print) <- ns
         if (!is.null(init$summary)) environment(init$summary) <- ns
         if (!is.null(init$text)) environment(init$text) <- ns
