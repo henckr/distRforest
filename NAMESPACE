@@ -1,4 +1,4 @@
-useDynLib(rpart, .registration = TRUE, .fixes = "C_")
+useDynLib(distRforest, .registration = TRUE, .fixes = "C_")
 
 export(meanvar, na.rpart, path.rpart, plotcp, post, printcp, prune,
        prune.rpart, rpart, rpart.control, rsq.rpart, snip.rpart, xpred.rpart, rforest)
@@ -21,4 +21,3 @@ S3method(prune, rpart)
 S3method(residuals, rpart)
 S3method(summary, rpart)
 S3method(text, rpart)
-
