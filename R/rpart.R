@@ -6,6 +6,7 @@ rpart <-
              model = FALSE, x = FALSE, y = TRUE, parms, control, cost, ncand, seed, redmem = FALSE, ...)
 {
     Call <- match.call()
+    if (missing(parms)) parms <- NULL
     if (is.data.frame(model)) {
         m <- model
         model <- FALSE
@@ -46,7 +47,7 @@ rpart <-
 
         ## Set up C callback.  Assign the result to a variable to avoid
         ## garbage collection
-	init <- if (missing(parms)) mlist$init(Y, offset, wt = wt)
+	init <- if (is.null(parms)) mlist$init(Y, offset, wt = wt)
 	        else mlist$init(Y, offset, parms, wt)
         keep <- rpartcallback(mlist, nobs, init)
 
@@ -67,7 +68,7 @@ rpart <-
         ##   preferentially "get" the init function from there.  But don't
         ##   lock in the rpart package otherwise, so that we can still do
         ##   standalone debugging.
-	init <- if (missing(parms) | is.null(parms))
+	init <- if is.null(parms)
             get(paste("rpart", method, sep = "."),
                 envir = environment())(Y, offset, , wt)
         else
