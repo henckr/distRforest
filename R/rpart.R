@@ -67,7 +67,7 @@ rpart <-
         ##   preferentially "get" the init function from there.  But don't
         ##   lock in the rpart package otherwise, so that we can still do
         ##   standalone debugging.
-	init <- if (missing(parms))
+	init <- if (missing(parms) | is.null(parms))
             get(paste("rpart", method, sep = "."),
                 envir = environment())(Y, offset, , wt)
         else
