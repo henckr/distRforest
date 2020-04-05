@@ -1,13 +1,17 @@
 Package: distRforest
-Version: 1.0
-License: GPL-2 | GPL-3
-Description: Extension of the rpart package with added loss functions and random forest functionality
 Title: Distribution-based Random Forest
-Author: Roel Henckaerts [aut]
-Maintainer: Roel Henckaerts <roelhenckaerts@gmail.com>
-Date: 2019-07-24
-Depends: R (>= 2.15.0), graphics, stats, grDevices
-Suggests: survival
+Version: 1.0
+Authors@R: 
+    person(given = "Roel",
+           family = "Henckaerts",
+           role = c("aut", "cre"),
+           email = "roel.henckaerts@kuleuven.be")
+Description: Extension of the rpart package with added loss functions and random forest functionality.
+URL: https://github.com/henckr/distRforest
+License: GPL-2 | GPL-3
+Encoding: UTF-8
 LazyData: yes
 ByteCompile: yes
 NeedsCompilation: yes
+Depends: R (>= 2.15.0), graphics, stats, grDevices
+Suggests: survival

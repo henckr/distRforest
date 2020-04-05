@@ -8,40 +8,37 @@ I added two specific features to this package:
 2. Build random forests from these regression trees.
 
 
-
-## How to install?
+## Installation
 
 #### Option 1 (direct download from GitHub)
-```
-install.packages(devtools)
+``` r
+install.packages('devtools')
 devtools::install_github('henckr/distRforest')
-library(distRforest)
 ```
 
 #### Option 2 (download source files and build the package yourself)
 Download the code such that you get the folder 'distRforest-master' containing all the source files.
 Change the working directory to the location of this folder. You can build the package and install it as follows:
-```
+``` r
 system('R CMD build distRforest-master')
 install.packages(list.files(pattern='^distRforest.*tar.gz$'), repos = NULL)
-library(distRforest)
 ```
 The first line works on Mac OS, for Windows you will need Rtools.
 
 
-## How to use?
+## Basic usage
 There is no help documentation available on the added features, so I explain all the necessary information here.
 
 #### Gamma and Lognormal regression trees
 To build a regression tree with the Gamma or Lognormal deviance as loss function, invoke the _rpart_ function as follows:
-```
+``` r
 rpart(formula, data, method = 'gamma') # for Gamma trees
 rpart(formula, data, method = 'lognormal') # for Lognormal trees
 ```
 
 #### Random forest
 The random forest function looks like this:
-```
+``` r
 rforest <- function(formula, data, weights = NULL, method, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, redmem = FALSE)
 ```
 The _rforest_ function contains four new parameters compared to the _rpart_ fucntion:
