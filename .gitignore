@@ -11,6 +11,8 @@ src/*.o
 src/*.so
 src/*.dll
 
+Changes_rpart.Rmd
+
 
 # Created by https://www.gitignore.io/api/r
 # Edit at https://www.gitignore.io/?templates=r
