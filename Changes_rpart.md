@@ -11,6 +11,8 @@ Name change from `rpart` to `distRforest`
     -   line 23: change *rpart* to *distRforest* in `R_init_distRforest(DllInfo * dll)`
 -   R/rpart.R
     -   line 78: change *rpart* to *distRforest* in `ns <- asNamespace("distRforest")`
+-   R/zzz.R
+    -   line 1: change *rpart* to *distRforest* in `library.dynam.unload("distRforest", libpath)`
 
 Random forest functionality
 ---------------------------
