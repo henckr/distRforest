@@ -72,7 +72,7 @@ Log-normal and gamma distributions
     -   add this file to initialize the gamma tree and check whether the response input is strictly positive
 -   R/rpart.R
     -   line 59 and 61: add `"lognormal"` and `"gamma"` to vector of possible methods
-    -   line 109: add warning message that CV is not supported when `method %in% c('lognormal','gamma') && xval > 0L`
+    -   line 109: add warning that CV is not supported when `method %in% c('lognormal','gamma') && xval > 0L`
 
 Miscellaneous
 -------------

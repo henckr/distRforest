@@ -167,3 +167,15 @@ test_that('Error is produced for gamma and lognormal in case of non-strictly-pos
                                   data = ausprivauto0405, method = 'lognormal', control = ctrl),
                'Response variable must be > 0, support of the log-normal distribution is strictly positive')
 })
+
+
+test_that('Warning is produced for gamma and lognormal in case of xval > 0',{
+  ausprivauto0405_claims <- ausprivauto0405[ausprivauto0405$ClaimAmount > 0, ]
+  ctrl <- rpart.control(minsplit = 20, cp = 0, xval = 5, maxdepth = 1)
+  expect_warning(distRforest::rpart(formula = ClaimAmount ~ VehValue + VehAge + VehBody + Gender + DrivAge, weights = ClaimNb,
+                                    data = ausprivauto0405_claims, method = 'gamma', control = ctrl),
+                 'Internal cross-validation through xval>0 in rpart.control is not implemented for method=lognormal and method=gamma.')
+  expect_warning(distRforest::rpart(formula = ClaimAmount ~ VehValue + VehAge + VehBody + Gender + DrivAge, weights = ClaimNb,
+                                    data = ausprivauto0405_claims, method = 'lognormal', control = ctrl),
+                 'Internal cross-validation through xval>0 in rpart.control is not implemented for method=lognormal and method=gamma.')
+})
