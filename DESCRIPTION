@@ -14,5 +14,8 @@ LazyData: yes
 ByteCompile: yes
 NeedsCompilation: yes
 Depends: R (>= 2.15.0), graphics, stats, grDevices
-Suggests: survival
+Suggests: 
+    survival,
+    CASdatasets,
+    testthat (>= 2.1.0)
 RoxygenNote: 7.0.2

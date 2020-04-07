@@ -67,9 +67,9 @@ Log-normal and gamma distributions
     -   line 52-57: add `extern int lognormal(...)` and `extern int gammasplit(...)`
     -   line 63-64: add `extern int lognormalpred(...)` and `extern int gammapred(...)`
 -   R/rpart.lognormal.R
-    -   add this file to be able to show lognormal output
+    -   add this file to initialize the lognormal tree and check whether the response input is strictly positive
 -   R/rpart.gamma.R
-    -   add this file to be able to show gamma output
+    -   add this file to initialize the gamma tree and check whether the response input is strictly positive
 -   R/rpart.R
     -   line 59 and 61: add `"lognormal"` and `"gamma"` to vector of possible methods
     -   line 109: add warning message that CV is not supported when `method %in% c('lognormal','gamma') && xval > 0L`
@@ -79,3 +79,6 @@ Miscellaneous
 
 -   vignettes/
     -   remove original `rpart` vignettes in the `distRforest` package
+-   tests/
+    -   remove original `rpart` tests in the `distRforest` package
+    -   test-distributions.R: test the `method = 'gamma'` and `method = 'lognormal'` options added to `rpart(...)`
