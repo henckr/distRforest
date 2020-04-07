@@ -1,29 +1,31 @@
 #
 #  The random forest function
 #
-rforest <- function(formula, data, weights = NULL, method, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, redmem = FALSE){
-  subsamp <- subsample
+rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, redmem = FALSE){
+
   # Collect the arguments for rpart in a list
   rpart_args <- list('formula' = formula,
-                     'data' = substitute(data[sample.int(nrow(data), size = subsamp*nrow(data), replace = subsamp < 1),]),
-                     'weights' = unname(as.list(match.call())[['weights']]),
                      'method' = method,
-                     'control' = control,
+                     'weights' = substitute(weights),
                      'parms' = parms,
+                     'control' = control,
                      'ncand' = ncand,
-                     'seed' = substitute(x),
-                     'redmem' = redmem)
+                     'redmem' = redmem,
+                     'seed' = substitute(rf_id))
   
   # Create the random forest
-  rf.fit <- lapply(1:ntrees, function(x) {
-                              set.seed(x)
-                              do.call('rpart', rpart_args)})
+  rf_fit <- vector('list', length = ntrees)
+  for (rf_id in seq_len(ntrees)) {
+    indx_smpl <- sample(seq_len(nrow(data)), size = subsample * nrow(data), replace = TRUE)
+    data_smpl <- data[indx_smpl, ]
+    rf_fit[[rf_id]] <- do.call('rpart', c(list(data = quote(data_smpl)), rpart_args))
+  }
   
   # Make the random forest of the class 'rf' and subclass 'list'
-  class(rf.fit) <- append('rf', class(rf.fit))
+  class(rf_fit) <- append('rforest', class(rf_fit))
   
   # Return the random forest
-  return(rf.fit)  
+  return(rf_fit)  
 }
 
 
