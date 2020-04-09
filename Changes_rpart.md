@@ -51,6 +51,8 @@ User-friendly random forest function
     -   add this file to make it easier for the user to build a random forest
 -   NAMESPACE
     -   line 3: add `rforest` to `export(...)`
+-   r/error\_funcs.R
+    -   add this file containing the functions to calculate the OOB error for the different `method` options
 
 Log-normal and gamma distributions
 ----------------------------------
@@ -82,3 +84,5 @@ Miscellaneous
 -   tests/
     -   remove original `rpart` tests in the `distRforest` package
     -   test-distributions.R: test the `method = 'gamma'` and `method = 'lognormal'` options added to `rpart(...)`
+    -   test-rforest.R: test whether `rforest()` is able to replicate identical trees as obtained with `rpart()`
+    -   test-outofbag.R: test if the tracking of the out-of-bag error with `rforest()` happens as expected
