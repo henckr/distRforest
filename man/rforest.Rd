@@ -80,8 +80,3 @@ Object of the class \code{rforest}, which is a list containing the
 This function acts as a user-friendly interface to build a random forest
 based on individual \code{\link{rpart}} trees.
 }
-\examples{
-\dontrun{
-
-}
-}

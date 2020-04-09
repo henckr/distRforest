@@ -47,10 +47,6 @@
 #'   \code{ntrees}, containing the individual \code{rpart} trees.}
 #'   \item{oob_error}{numeric vector of length equal to \code{ntrees},
 #'   containing the OOB error at each iteration (if \code{track_oob = TRUE}).}}
-#' @examples
-#' \dontrun{
-#'
-#' }
 rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE, redmem = FALSE){
   
   if (is.character(substitute(weights))) weights <- as.name(weights)
