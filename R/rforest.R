@@ -1,7 +1,59 @@
-#
-# Random forest function
-#
+#' Build a random forest
+#'
+#' This function acts as a user-friendly interface to build a random forest
+#' based on individual \code{\link{rpart}} trees.
+#'
+#' @param formula object of the class \code{formula} with a symbolic description
+#'   of the form \code{response ~ var1 + var2 + var3} without interactions.
+#'   Please refrain from applying transformation functions to the response, but
+#'   add the transformed variable to the \code{data} beforehand. Two exceptions
+#'   exist, see \code{method = 'poisson'} and \code{method = 'exp'} below.
+#' @param data data frame containing the training data observations.
+#' @param method string specifying the type of tree to build. Options are:
+#'   \describe{\item{'class'}{classification tree (OOB error tracking only
+#'   implemented for binary classification).} \item{'anova'}{standard regression
+#'   tree with a squared error loss.} \item{'poisson'}{poisson regression tree
+#'   for count data. The left-hand-side of \code{formula} can be specified as
+#'   \code{cbind(observation_time, number_of_events)} to include time
+#'   exposures.} \item{'gamma'}{gamma regression tree for strictly positive
+#'   long-tailed data.} \item{'lognormal'}{lognormal regression tree for
+#'   strictly positive long-tailed data.} \item{'exp'}{exponential scaling for
+#'   survival data. The left-hand-side of \code{formula} is specified as
+#'   \code{Surv(observation_time, event_indicator)} to include time exposures.}}
+#' @param weights optional name of the variable in \code{data} to use as case
+#'   weights. Either as a string or simply the variable name should work.
+#' @param parms optional parameters for the splitting function, see
+#'   \code{\link{rpart}} for the details and allowed options.
+#' @param control list of options that control the fitting details of the
+#'   \code{rpart} trees. Use \code{\link{rpart.control}} to set this up.
+#' @param ncand integer specifying the number of randomly chosen variable
+#'   candidates to consider at each node to find the optimal split.
+#' @param ntrees integer specifying the number of trees in the ensemble.
+#' @param subsample numeric in the range [0,1]. Each tree in the ensemble is
+#'   built on randomly sampled data of size \code{subsample * nrow(data)}.
+#' @param track_oob boolean to indicate whether the out-of-bag errors should be
+#'   tracked (TRUE) or not (FALSE). This option is not implemented for
+#'   \code{method = 'exp'} or multi-class classification. For the other methods,
+#'   there errors are tracked:  \describe{\item{'class'}{Matthews correlation
+#'   coefficient for binary classification.} \item{'anova'}{mean squared error.}
+#'   \item{'poisson'}{Poisson deviance.} \item{'gamma'}{gamma deviance.}
+#'   \item{'lognormal'}{mean squared error.}} All these errors are evaluated in
+#'   a weighted version if \code{weights} are supplied.
+#' @param redmem boolean whether to reduce the memory footprint of the
+#'   \code{rpart} trees by eliminating non-essential elements from the fits. It
+#'   is adviced to set this to \code{TRUE} for large values of \code{ntrees}.
+#' @return Object of the class \code{rforest}, which is a list containing the
+#'   following elements: \describe{\item{trees}{list of length equal to
+#'   \code{ntrees}, containing the individual \code{rpart} trees.}
+#'   \item{oob_error}{numeric vector of length equal to \code{ntrees},
+#'   containing the OOB error at each iteration (if \code{track_oob = TRUE}).}}
+#' @examples
+#' \dontrun{
+#'
+#' }
 rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE, redmem = FALSE){
+  
+  if (is.character(substitute(weights))) weights <- as.name(weights)
   
   # Some checks wrt the implementation of OOB error tracking
   if (track_oob) {

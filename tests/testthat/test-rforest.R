@@ -10,6 +10,26 @@ library(CASdatasets)
 data(ausprivauto0405)
 
 
+test_that('The weights parameter can be specified as string or variable name', {
+  # Set some global settings
+  ausprivauto0405_claims <- ausprivauto0405[ausprivauto0405$ClaimAmount > 0, ]
+  ctrl <- rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5)
+  ncand_val <- 3 ; ntrees_val <- 5 ; subsample_val <- 0.5
+  # Fit the random forest with variable name as weight
+  set.seed(54321)
+  rf_gamma <- distRforest::rforest(formula = ClaimAmount ~ VehValue + VehAge + VehBody + Gender + DrivAge, weights = ClaimNb,
+                                   data = ausprivauto0405_claims, method = 'gamma', control = ctrl,
+                                   ncand = ncand_val, ntrees = ntrees_val, subsample = subsample_val)
+  # Fit the random forest with string as weight
+  set.seed(54321)
+  rf_gamma_chr <- distRforest::rforest(formula = ClaimAmount ~ VehValue + VehAge + VehBody + Gender + DrivAge, weights = 'ClaimNb',
+                                       data = ausprivauto0405_claims, method = 'gamma', control = ctrl,
+                                       ncand = ncand_val, ntrees = ntrees_val, subsample = subsample_val)
+  # Check that they are exactly the same
+  for(i in seq_len(ntrees_val)) expect_true(all.equal(rf_gamma[['trees']][[i]]$frame, rf_gamma_chr[['trees']][[i]]$frame))
+})
+
+
 test_that('The random forest results in the same Poisson trees with exposure as one would get with rpart', {
   # Set some global settings
   ctrl <- rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5)
