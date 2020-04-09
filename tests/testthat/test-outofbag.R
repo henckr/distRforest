@@ -164,3 +164,17 @@ test_that('the OOB error is tracked properly for an unbalanced binary classifica
                                       ncand = 3, ntrees = 20, subsample = 0.5, redmem = TRUE, track_oob = TRUE)
   expect_true(all(rf_obj$oob_error == rf_obj_fact$oob_error))
 })
+
+
+test_that('Error is produced for unimplemented OOB tracking situations', {
+  ctrl <- rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5)
+  expect_error(rf_obj <- distRforest::rforest(formula = ClaimNb ~ VehValue + VehAge + VehBody + Gender + DrivAge,
+                                              data = ausprivauto0405, method = 'class', control = ctrl,
+                                              ncand = 3, ntrees = 20, subsample = 0.5, redmem = TRUE, track_oob = TRUE),
+               'Tracking the OOB error is only implemented for binary classification.')
+  expect_error(rf_obj <- distRforest::rforest(formula = ClaimNb ~ VehValue + VehAge + VehBody + Gender + DrivAge,
+                                              data = ausprivauto0405, method = 'exp', control = ctrl,
+                                              ncand = 3, ntrees = 20, subsample = 0.5, redmem = TRUE, track_oob = TRUE),
+               'Tracking the OOB error is only implemented for the following methods: class, anova, poisson, gamma and lognormal.')
+  
+})

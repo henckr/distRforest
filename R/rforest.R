@@ -1,7 +1,13 @@
 #
-#  The random forest function
+# Random forest function
 #
 rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE, redmem = FALSE){
+  
+  # Some checks wrt the implementation of OOB error tracking
+  if (track_oob) {
+    if (! method %in% c('class', 'anova', 'poisson', 'gamma', 'lognormal')) stop('Tracking the OOB error is only implemented for the following methods: class, anova, poisson, gamma and lognormal.')
+    if (method == 'class') if (length(unique(data[, as.character(formula[[2]])])) > 2) stop('Tracking the OOB error is only implemented for binary classification.')
+  }
 
   # Collect the arguments for rpart in a list
   rpart_args <- list('formula' = formula,
