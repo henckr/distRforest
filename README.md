@@ -3,7 +3,7 @@
 This package contains an `R` implementation for random forests with distribution-based loss functions.
 
 ## Overview
-The `distRforest` package is based on the `rpart` package and extends its functionality. The `rpart` package implements classification trees, standard regression trees (with a squared error loss function), Poisson regression trees (with the Poisson deviance as a loss function) and exponential smoothing for survival data. The following two features are added in `distRforest`:
+The `distRforest` package is based on the `rpart` package and extends its functionality. The `rpart` package implements classification trees, standard regression trees (with a squared error loss function), Poisson regression trees (with the Poisson deviance as a loss function) and exponential smoothing for survival data. The following features are added in `distRforest`:
 1. Develop regression trees with the **gamma** and **log-normal** deviance as loss functions for long-tailed data.
 2. Build a random forest consisting of individual `rpart` trees in the ensemble.
 
@@ -24,4 +24,4 @@ Note that the basic function to create a decision tree is still called `rpart(..
 
 
 ## Disclaimer
-This is an extension of the `rpart` package, which is on [CRAN](https://cran.r-project.org/web/packages/rpart/index.html), and has the original source code on [GitHub](https://github.com/cran/rpart). By no means is this meant to be a completely new `R` package or a replacement for `rpart`. This is merely an extension of the `rpart` package for specific use-cases. The original functionality stays valid and copyright belongs to the authors Terry Therneau, Beth Atkinson and Brian Ripley.
+This is an extension of the `rpart` package, which is on [CRAN](https://cran.r-project.org/web/packages/rpart/index.html), and has the original source code on [GitHub](https://github.com/cran/rpart). By no means is this meant to be a completely new `R` package or a replacement for `rpart`. This is merely an extension of the `rpart` package for specific use-cases. The original functionality stays valid and copyright belongs to the authors Terry Therneau, Beth Atkinson and Brian Ripley. The changes made to the original source code are listed [here](Changes_rpart.md).
