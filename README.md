@@ -7,7 +7,7 @@ The `distRforest` package is based on the `rpart` package and extends its functi
 1. Develop regression trees with the **gamma** and **log-normal** deviance as loss functions for long-tailed data.
 2. Build a random forest consisting of individual `rpart` trees in the ensemble.
 
-This package is mainly intented for users who want to develop a **random forest** on **count data** (via the Poisson distribution) or on **long-tailed data** (via the gamma or log-normal distribution). A random forest implementation that supports those distributions is lacking from the `R` universe, but they play a vital role in certain sectors. An example is the insurance industry, where claim counts and amounts need to be modelled and predicted for several general insurance products. If the goal of the user is to develop a random forest on a classification or standard regression problem, then there are more efficient, scalable and complete random forest implementations available in the `R` universe.
+This package is mainly intented for users who want to develop a **random forest** on **count data** (via the Poisson distribution) or on **long-tailed data** (via the gamma or log-normal distribution). A random forest implementation that supports those distributions is lacking from the `R` universe, but they play a vital role in certain sectors. An example is the insurance industry, where claim counts and amounts need to be modelled and predicted for several general insurance products. If the goal of the user is to develop a random forest on a classification, standard regression or survival problem, then there are more efficient, scalable and complete random forest implementations available in the `R` universe.
 
 
 ## Installation
