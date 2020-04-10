@@ -44,13 +44,15 @@ Random forest functionality
     -   line 50: change `rp.nvar` to `rp.ncand` in `for (i = 0; i < rp.ncand; i++)` to iterate over subset
     -   line 51-94: change `i` to `candidates[i]` in `for` body to select correct split candidate from the sample
 
-User-friendly random forest function
-------------------------------------
+User-friendly random forest functions
+-------------------------------------
 
 -   R/rforest.R
     -   add this file to make it easier for the user to build a random forest
+-   R/predict.rforest.R
+    -   add this file to make it easier for the user to predict from a random forest
 -   NAMESPACE
-    -   line 3: add `rforest` to `export(...)`
+    -   line 7: add `rforest` and `predict.rforest` to `export(...)`
 -   r/error\_funcs.R
     -   add this file containing the functions to calculate the OOB error for the different `method` options
 
@@ -86,3 +88,4 @@ Miscellaneous
     -   test-distributions.R: test the `method = 'gamma'` and `method = 'lognormal'` options added to `rpart(...)`
     -   test-rforest.R: test whether `rforest()` is able to replicate identical trees as obtained with `rpart()`
     -   test-outofbag.R: test if the tracking of the out-of-bag error with `rforest()` happens as expected
+    -   test-predict.R: test if predictions with `predict.rforest()` are being generated as expected
