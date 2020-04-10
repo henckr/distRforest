@@ -51,8 +51,10 @@ User-friendly random forest functions
     -   add this file to make it easier for the user to build a random forest
 -   R/predict.rforest.R
     -   add this file to make it easier for the user to predict from a random forest
+-   R/importance\_rforest.R
+    -   add this file to make it easier for the user to calculate variable importance scores from a random forest
 -   NAMESPACE
-    -   line 7: add `rforest` and `predict.rforest` to `export(...)`
+    -   line 7: add `rforest`, `predict.rforest` and `importance_rforest` to `export(...)`
 -   r/error\_funcs.R
     -   add this file containing the functions to calculate the OOB error for the different `method` options
 
@@ -89,3 +91,4 @@ Miscellaneous
     -   test-rforest.R: test whether `rforest()` is able to replicate identical trees as obtained with `rpart()`
     -   test-outofbag.R: test if the tracking of the out-of-bag error with `rforest()` happens as expected
     -   test-predict.R: test if predictions with `predict.rforest()` are being generated as expected
+    -   test-importance.R: test if `importance_rforest()` calculates the variable importance scores as expected
