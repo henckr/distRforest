@@ -34,8 +34,8 @@ test_that('Poisson tree with exposure is being calculated correctly', {
   expect_equal(nrow(right_branch), right_nobs)
   expect_equal(sum(left_branch$ClaimNb)/sum(left_branch$Exposure), left_pred)
   expect_equal(sum(right_branch$ClaimNb)/sum(right_branch$Exposure), right_pred)
-  expect(poiss_dev(left_branch$ClaimNb, left_pred * left_branch$Exposure), left_dev)
-  expect(poiss_dev(right_branch$ClaimNb, right_pred * right_branch$Exposure), right_dev)
+  expect_equal(poiss_dev(left_branch$ClaimNb, left_pred * left_branch$Exposure), left_dev)
+  expect_equal(poiss_dev(right_branch$ClaimNb, right_pred * right_branch$Exposure), right_dev)
 })
 
 

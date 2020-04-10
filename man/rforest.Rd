@@ -15,7 +15,8 @@ rforest(
   ntrees,
   subsample = 1,
   track_oob = FALSE,
-  redmem = FALSE
+  keep_data = FALSE,
+  red_mem = FALSE
 )
 }
 \arguments{
@@ -65,7 +66,10 @@ coefficient for binary classification.} \item{'anova'}{mean squared error.}
 \item{'lognormal'}{mean squared error.}} All these errors are evaluated in
 a weighted version if \code{weights} are supplied.}
 
-\item{redmem}{boolean whether to reduce the memory footprint of the
+\item{keep_data}{boolean to indicate whether the \code{data} should be saved
+with the fit. Not advised to set this to \code{TRUE} for large data sets.}
+
+\item{red_mem}{boolean whether to reduce the memory footprint of the
 \code{rpart} trees by eliminating non-essential elements from the fits. It
 is adviced to set this to \code{TRUE} for large values of \code{ntrees}.}
 }
@@ -74,7 +78,8 @@ Object of the class \code{rforest}, which is a list containing the
   following elements: \describe{\item{trees}{list of length equal to
   \code{ntrees}, containing the individual \code{rpart} trees.}
   \item{oob_error}{numeric vector of length equal to \code{ntrees},
-  containing the OOB error at each iteration (if \code{track_oob = TRUE}).}}
+  containing the OOB error at each iteration (if \code{track_oob = TRUE}).}
+  \item{data}{the training \code{data} (if \code{keep_data = TRUE}).}}
 }
 \description{
 This function acts as a user-friendly interface to build a random forest

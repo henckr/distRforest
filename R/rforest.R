@@ -39,15 +39,18 @@
 #'   \item{'poisson'}{Poisson deviance.} \item{'gamma'}{gamma deviance.}
 #'   \item{'lognormal'}{mean squared error.}} All these errors are evaluated in
 #'   a weighted version if \code{weights} are supplied.
-#' @param redmem boolean whether to reduce the memory footprint of the
+#' @param keep_data boolean to indicate whether the \code{data} should be saved
+#'   with the fit. Not advised to set this to \code{TRUE} for large data sets.
+#' @param red_mem boolean whether to reduce the memory footprint of the
 #'   \code{rpart} trees by eliminating non-essential elements from the fits. It
 #'   is adviced to set this to \code{TRUE} for large values of \code{ntrees}.
 #' @return Object of the class \code{rforest}, which is a list containing the
 #'   following elements: \describe{\item{trees}{list of length equal to
 #'   \code{ntrees}, containing the individual \code{rpart} trees.}
 #'   \item{oob_error}{numeric vector of length equal to \code{ntrees},
-#'   containing the OOB error at each iteration (if \code{track_oob = TRUE}).}}
-rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE, redmem = FALSE){
+#'   containing the OOB error at each iteration (if \code{track_oob = TRUE}).}
+#'   \item{data}{the training \code{data} (if \code{keep_data = TRUE}).}}
+rforest <- function(formula, data, method, weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE, keep_data = FALSE, red_mem = FALSE){
   
   if (is.character(substitute(weights))) weights <- as.name(weights)
   
@@ -64,7 +67,7 @@ rforest <- function(formula, data, method, weights = NULL, parms = NULL, control
                      'parms' = parms,
                      'control' = control,
                      'ncand' = ncand,
-                     'redmem' = redmem,
+                     'redmem' = red_mem,
                      'seed' = substitute(rf_id))
   
   # Create a list to save the individual trees in the random forest
@@ -114,8 +117,9 @@ rforest <- function(formula, data, method, weights = NULL, parms = NULL, control
   
   # Save the trees in a list under the $trees attribute
   rf_obj <- list('trees' = rf_fit)
-  # Add the tracked OOB error to the list
+  # Add the tracked OOB error / training data to the list
   if (track_oob) rf_obj[['oob_error']] <- oob_err
+  if (keep_data) rf_obj[['data']] <- data
   
   # Make the random forest object of the class 'rforest' and subclass 'list'
   class(rf_obj) <- append('rforest', class(rf_obj))
