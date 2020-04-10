@@ -3,7 +3,7 @@
 This package contains an `R` implementation for random forests with distribution-based loss functions.
 
 ## Overview
-The `distRforest` package is based on the `rpart` package and extends its functionality. The `rpart` package implements classification trees, standard regression trees (with a squared error loss function), Poisson regression trees (with the Poisson deviance as a loss function) and exponential smoothing for survival data. The following features are added in `distRforest`:
+The `distRforest` package is based on the `rpart` package and extends its functionality. The `rpart` package implements classification trees, standard regression trees (with a squared error loss function), Poisson regression trees (with the Poisson deviance as a loss function) and exponential scaling for survival data. The following features are added in `distRforest`:
 1. Develop regression trees with the **gamma** and **log-normal** deviance as loss functions for long-tailed data.
 2. Build a random forest consisting of individual `rpart` trees in the ensemble.
 
