@@ -17,5 +17,8 @@ Depends: R (>= 2.15.0), graphics, stats, grDevices
 Suggests: 
     survival,
     CASdatasets,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
 RoxygenNote: 7.0.2
+VignetteBuilder: knitr
