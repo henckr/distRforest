@@ -98,12 +98,167 @@ Predictions from a random forest can be retrieved via the generic `predict` func
 The function returns a numeric vector containing a prediction for each observation. A majority vote among individual trees is taken for a binary classification forest, while the predictions of the individual trees are averaged for normal, poisson, gamma and lognormal regression forests.
 
 ### Classification forest to model/predict the occurrence of a claim
+Assume that you want to model which type of policyholder in the portfolio is more likely to file a claim. The variable `ClaimOcc` in the `ausprivauto0405` data has the value `1` for policyholders who filed a claim and `0` otherwise. An insurance claim is an unlikely event, as most policyholders do not file a claim:
+```{r class_data}
+ausprivauto0405$ClaimOcc %>% table %>% prop.table
+```
+**It is important that your binary classification response is a numeric or factor with the value 0/1 for the negative/positive class to make sure that everything runs smoothly!**
+
+Let's build a binary classification forest for claim occurrence on a (naively) balanced dataset:
+```{r class_rforest}
+# Balance the data
+ausprivauto0405_balanced <- rbind(ausprivauto0405[ausprivauto0405$ClaimOcc == 1, ],
+                                  ausprivauto0405[ausprivauto0405$ClaimOcc == 0, ][1:5000, ])
+# Build the random forest
+set.seed(54321)
+rf_class <- rforest(formula = ClaimOcc ~ VehValue + VehAge + VehBody + Gender + DrivAge,
+                    data = ausprivauto0405_balanced,
+                    method = 'class',
+                    control = rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5),
+                    ncand = 3,
+                    ntrees = 200,
+                    subsample = 0.5,
+                    track_oob = TRUE,
+                    keep_data = TRUE,
+                    red_mem = TRUE)
+```
+
+The fit is of the class `rforest`, which is a `list` containing the individual `trees`, the `oob_error` and the `data`.
+```{r class_out}
+class(rf_class)
+names(rf_class)
+rf_class[['trees']][[1]]
+```
+
+The OOB error evolution (`track_oob = TRUE` in `rforest`) shows an increasing trend in Matthews correlation coefficient, which means that the classification is improving over the iterations:
+```{r class_oob, fig.width=7}
+oob_df <- data.frame('iteration' = seq_len(length(rf_class[['oob_error']])),
+                     'oob_error' = rf_class[['oob_error']])
+ggplot(oob_df, aes(x = iteration, y = oob_error)) + geom_point()
+```
+*Sidenote: Matthews correlation coefficient is chosen because this measure takes into account all four elements of the confusion matrix. Measures like accuracy, precision, recall or the F1 score ignore at least one of them.*
+
+Predictions from the random forest can be compared to the true values to assess performance. A reasonable amount of observations are classified falsely, but this is likely driven by the limited number of iterations and variables involved to model claim occurrence. Note that there is no need to specify `newdata` in `predict` as `keep_data = TRUE` in `rforest`. If `keep_data = FALSE` then `newdata = ausprivauto0405_balanced` is needed.
+```{r class_pred}
+pred_df <- data.frame('true' = ausprivauto0405_balanced$ClaimOcc,
+                      'pred' = predict(rf_class))
+sprintf('True positives: %i', sum(pred_df$true == 1 & pred_df$pred == 1))
+sprintf('False positives: %i', sum(pred_df$true == 0 & pred_df$pred == 1))
+sprintf('True negatives: %i', sum(pred_df$true == 0 & pred_df$pred == 0))
+sprintf('False negatives: %i', sum(pred_df$true == 1 & pred_df$pred == 0))
+```
 
 
 ### Poisson regression forest to model/predict claim numbers
+Although most policyholders do not file a claim in the portfolio, some of them file more than one claim. The variable `ClaimNb` in the `ausprivauto0405` data contains the number of claims filed by a specific policyholder. The variable `Exposure` contains the fraction of the year that a policyholder was covered by the policy and therefore exposed to the risk of filing a claim. This information should be taken into account as filing a claim during one year or one month of exposure represents a different risk.
+```{r poiss_data}
+ausprivauto0405$ClaimNb %>% table %>% prop.table
+ausprivauto0405$Exposure %>% quantile(probs = seq(0, 1, 0.2))
+```
+
+Let's build a Poisson regression forest which takes the exposure into account via `cbind` in the `formula`:
+```{r poiss_rforest}
+# Build the random forest
+set.seed(54321)
+rf_poiss <- rforest(formula = cbind(Exposure, ClaimNb) ~ VehValue + VehAge + VehBody + Gender + DrivAge,
+                    data = ausprivauto0405,
+                    method = 'poisson',
+                    parms = list('shrink' = 10000000),
+                    control = rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5),
+                    ncand = 3,
+                    ntrees = 200,
+                    subsample = 0.5,
+                    track_oob = TRUE,
+                    keep_data = TRUE,
+                    red_mem = TRUE)
+```
+
+The fit is of the class `rforest`, which is a `list` containing the individual `trees`, the `oob_error` and the `data`.
+```{r poiss_out}
+class(rf_poiss)
+names(rf_poiss)
+rf_poiss[['trees']][[1]]
+```
+
+The OOB error evolution (`track_oob = TRUE` in `rforest`) shows a decreasing trend in the Poisson deviance, which means that the predictions for the claim numbers are improving over the iterations:
+```{r poiss_oob, fig.width=7}
+oob_df <- data.frame('iteration' = seq_len(length(rf_poiss[['oob_error']])),
+                     'oob_error' = rf_poiss[['oob_error']])
+ggplot(oob_df, aes(x = iteration, y = oob_error)) + geom_point()
+```
+
+Predictions from the random forest can be compared to the true values to assess performance. Note that predictions from a Poisson forest are given on a scale of full time exposure (i.e., setting `Exposure = 1` in our case), so you need to multiply predictions with observed `Exposure` values. Policyholders are split in 5 groups based on their predicted values, going from low to high risk, and the mean of the observed number of claims is calculated per group. The increasing trend shows that the Poisson forest is able to model the risk properly:
+```{r poiss_pred}
+pred_df <- data.frame('true' = ausprivauto0405$ClaimNb,
+                      'pred' = predict(rf_poiss) * ausprivauto0405$Exposure)
+split_df <- pred_df %>% split(cut(pred_df$pred,
+                                  breaks = quantile(pred_df$pred, probs = seq(0, 1, 0.2)),
+                                  labels = c('lowest risk', 'low risk', 'medium risk', 'high risk', 'highest risk')))
+lapply(split_df, function(df_sub) mean(df_sub$true))
+```
 
 
 ### Gamma regression forest to model/predict the claim amounts
+Besides estimating how frequent a policyholder will file a claim, it is also important to get an idea of the actual severity of the claims in money terms. The variable `ClaimAmount` in the `ausprivauto0405` data contains the sum of claim payments over all claims filed by a specific policyholder. To approximate the individual claim amounts, a new variable `ClaimAvg` is defined for the average claim payment, but only for those policyholders actually filing a claim. These claim amounts are clearly long-tailed, which calls for appropriate statistical assumptions:
+```{r gamma_data}
+ausprivauto0405_claims <- ausprivauto0405[ausprivauto0405$ClaimOcc == 1, ]
+ausprivauto0405_claims$ClaimAvg <- with(ausprivauto0405_claims, ClaimAmount / ClaimNb)
+ausprivauto0405_claims$ClaimAvg %>% quantile(probs = seq(0, 1, 0.2))
+```
 
+Let's build a gamma regression forest for the average claim amount and the number of claims as case weights:
+```{r gamma_rforest}
+# Build the random forest
+set.seed(54321)
+rf_gamma <- rforest(formula = ClaimAvg ~ VehValue + VehAge + VehBody + Gender + DrivAge,
+                    data = ausprivauto0405_claims,
+                    weights = ClaimNb,
+                    method = 'gamma',
+                    control = rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5),
+                    ncand = 3,
+                    ntrees = 200,
+                    subsample = 0.5,
+                    track_oob = TRUE,
+                    keep_data = TRUE,
+                    red_mem = TRUE)
+```
+
+The fit is of the class `rforest`, which is a `list` containing the individual `trees`, the `oob_error` and the `data`.
+```{r gamma_out}
+class(rf_gamma)
+names(rf_gamma)
+rf_gamma[['trees']][[1]]
+```
+
+The OOB error evolution (`track_oob = TRUE` in `rforest`) shows a decreasing trend in the gamma deviance, which means that the predictions for the claim amounts are improving over the iterations:
+```{r gamma_oob, fig.width=7}
+oob_df <- data.frame('iteration' = seq_len(length(rf_gamma[['oob_error']])),
+                     'oob_error' = rf_gamma[['oob_error']])
+ggplot(oob_df, aes(x = iteration, y = oob_error)) + geom_point()
+```
+
+Predictions from the random forest can be compared to the true values to assess performance. Note that the predictions are being made for the average claim amount, so you need to multiply predictions with observed `ClaimNb` values to get the aggregate claim cost prediction. Policyholders are split in 5 groups based on their predicted values, going from low to high risk, and the mean of the observed claim amounts is calculated per group. The increasing trend shows that the gamma forest is able to model the risk properly:
+```{r gamma_pred}
+pred_df <- data.frame('true' = ausprivauto0405_claims$ClaimAmount,
+                      'pred' = predict(rf_gamma) * ausprivauto0405_claims$ClaimNb)
+split_df <- pred_df %>% split(cut(pred_df$pred,
+                                  breaks = quantile(pred_df$pred, probs = seq(0, 1, 0.2)),
+                                  labels = c('lowest risk', 'low risk', 'medium risk', 'high risk', 'highest risk')))
+lapply(split_df, function(df_sub) mean(df_sub$true))
+```
 
 ## Assessing the importance of each variable
+The `distRforest` package allows for an easy calculation of variable importance scores for an `rforest` object. The function `importance_rforest` takes one argument, namely the fitted `rforest` object. The result is a data frame with one row per variable and four columns:
+
++ `variable`: name of the variable.
++ `importance`: average importance score, taken over all the individual trees.
++ `scale_sum`: scaled scores which sum to one.
++ `scale_max`: scaled scores such that the maximum value is equal to one.
+
+Assessing the importance of each variable in the three forests built before shows a rather uniform ranking:
+```{r importance}
+rf_class %>% importance_rforest
+rf_poiss %>% importance_rforest
+rf_gamma %>% importance_rforest
+```
+
