@@ -2,6 +2,7 @@
 inst/doc
 
 *.Rproj
+R/hex_logo.R
 vignettes/*_cache/
 vignettes/*_files/
 vignettes/*.R
