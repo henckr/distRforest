@@ -28,16 +28,16 @@ exist, see \code{method = 'poisson'} and \code{method = 'exp'} below.}
 
 \item{data}{data frame containing the training data observations.}
 
-\item{method}{string specifying the type of tree to build. Options are:
-\describe{\item{'class'}{classification tree (OOB error tracking only
+\item{method}{string specifying the type of forest to build. Options are:
+\describe{\item{'class'}{classification forest (OOB error tracking only
 implemented for binary classification).} \item{'anova'}{standard regression
-tree with a squared error loss.} \item{'poisson'}{poisson regression tree
-for count data. The left-hand-side of \code{formula} can be specified as
-\code{cbind(observation_time, number_of_events)} to include time
-exposures.} \item{'gamma'}{gamma regression tree for strictly positive
-long-tailed data.} \item{'lognormal'}{lognormal regression tree for
-strictly positive long-tailed data.} \item{'exp'}{exponential scaling for
-survival data. The left-hand-side of \code{formula} is specified as
+forest with a squared error loss.} \item{'poisson'}{poisson regression
+forest for count data. The left-hand-side of \code{formula} can be
+specified as \code{cbind(observation_time, number_of_events)} to include
+time exposures.} \item{'gamma'}{gamma regression forest for strictly
+positive long-tailed data.} \item{'lognormal'}{lognormal regression forest
+for strictly positive long-tailed data.} \item{'exp'}{exponential scaling
+for survival data. The left-hand-side of \code{formula} is specified as
 \code{Surv(observation_time, event_indicator)} to include time exposures.}}}
 
 \item{weights}{optional name of the variable in \code{data} to use as case
@@ -60,7 +60,7 @@ built on randomly sampled data of size \code{subsample * nrow(data)}.}
 \item{track_oob}{boolean to indicate whether the out-of-bag errors should be
 tracked (TRUE) or not (FALSE). This option is not implemented for
 \code{method = 'exp'} or multi-class classification. For the other methods,
-there errors are tracked:  \describe{\item{'class'}{Matthews correlation
+these errors are tracked:  \describe{\item{'class'}{Matthews correlation
 coefficient for binary classification.} \item{'anova'}{mean squared error.}
 \item{'poisson'}{Poisson deviance.} \item{'gamma'}{gamma deviance.}
 \item{'lognormal'}{mean squared error.}} All these errors are evaluated in
@@ -74,7 +74,7 @@ with the fit. Not advised to set this to \code{TRUE} for large data sets.}
 is adviced to set this to \code{TRUE} for large values of \code{ntrees}.}
 }
 \value{
-Object of the class \code{rforest}, which is a list containing the
+object of the class \code{rforest}, which is a list containing the
   following elements: \describe{\item{trees}{list of length equal to
   \code{ntrees}, containing the individual \code{rpart} trees.}
   \item{oob_error}{numeric vector of length equal to \code{ntrees},

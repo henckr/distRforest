@@ -1,19 +1,109 @@
 ---
-title: "distRforest"
-output: rmarkdown::html_vignette
+title: 'Random forests using distribution-based loss functions with distRforest'
+author: 'Roel Henckaerts'
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{distRforest}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{css, echo = FALSE}
+pre code, pre, code {
+  white-space: pre !important;
+  overflow-x: scroll !important;
+  word-break: keep-all !important;
+  word-wrap: initial !important;
+}
+```
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r options, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = '#>', cache = TRUE, cache.lazy = FALSE)
+library(magrittr)
+library(ggplot2)
 ```
 
 ```{r setup}
 library(distRforest)
 ```
+
+
+## Automobile insurance claim dataset
+The use of `distRforest` will be illustrated with the `ausprivauto0405` dataset from the package `CASdatasets`:
+
+> Third party insurance is a compulsory insurance for vehicle owners in Australia. It insures vehicle owners against injury caused to other drivers, passengers or pedestrians, as a result of an accident.
+The `ausprivauto0405` dataset is based on one-year vehicle insurance policies taken out in 2004 or 2005. There are 67856 policies, of which 4624 had at least one claim.
+
+```{r data_load, message=FALSE}
+library(CASdatasets)
+data(ausprivauto0405)
+```
+
+The `ausprivauto0405` dataset is a `r class(ausprivauto0405)` with `r nrow(ausprivauto0405)` observations and `r ncol(ausprivauto0405)` variables (`r names(ausprivauto0405)`):
+```{r data_struct}
+str(ausprivauto0405)
+```
+Variables of interest are introduced when needed. For a full description see `?CASdatasets::ausprivauto0405`.
+
+
+## Building a random forest and making predictions
+This section introduces the functions to build a random forest and make predictions from it. Afterwards, examples of binary classification, Poisson regression and Gamma regression illustrate how to use them.
+
+### Build a random forest
+To build a random forest with the `distRforest` package, call the function `rforest(formula, data, method,` `weights = NULL, parms = NULL, control = NULL, ncand, ntrees, subsample = 1, track_oob = FALSE,` `keep_data = FALSE, red_mem = FALSE)` with the following arguments:
+
++ `formula`: object of the class `formula` with a symbolic description for the model to be fitted of the form `response ~ var1 + var2 + var3` without interactions. Please refrain from applying transformation functions to the response, but add the transformed variable to the `data` beforehand. Two exceptions exist, see `method = 'poisson'` and `method = 'exp'` below.
++ `data`: data frame containing the training data observations.
++ `method`: string specifying the type of forest to build. Options are:
+    - `'class'`: classification forest.
+    - `'anova'`: standard regression forest with a squared error loss.
+    - `'poisson'`: poisson regression forest for count data. The left-hand-side of `formula` can be specified as `cbind(observation_time, number_of_events)` to include time exposures.
+    - `'gamma'`: gamma regression forest for strictly positive long-tailed data.
+    - `'lognormal'`: lognormal regression forest for strictly positive long-tailed data.
+    - `'exp'`: exponential scaling for survival data. The left-hand-side of `formula` is specified as `Surv(observation_time, event_indicator)` to include time exposures.
++ `weights`: optional name of the variable in `data` to use as case weights. Either as a string or simply the variable name should work.
++ `parms`: optional parameters for the splitting function, see `?distRforest::rpart` for the details and allowed options.
++ `control`: list of options that control the fitting details of the individual `rpart` trees. Use `distRforest::rpart.control` to set this up.
++ `ncand`: integer specifying the number of randomly chosen variable candidates to consider at each node to find the optimal split.
++ `ntrees`: integer specifying the number of trees in the ensemble.
++ `subsample`: numeric in the range [0,1]. Each tree in the ensemble is built on randomly sampled data of size `subsample * nrow(data)`.
++ `track_oob`: boolean to indicate whether the out-of-bag errors should be tracked (`TRUE`) or not (`FALSE`). This option is not implemented for `method = 'exp'` or multi-class classification. For the other methods, the following errors are tracked. All the errors are evaluated in a weighted version if `weights` are supplied.
+    - `class`: Matthews correlation coefficient for binary classification.
+    - `anova`: mean squared error.
+    - `poisson`: Poisson deviance.
+    - `gamma`: gamma deviance.
+    - `lognormal`: mean squared error.
++ `keep_data`: boolean to indicate whether the `data` should be saved with the fit. It is not advised to set this to `TRUE` for large data sets.
++ `red_mem`: boolean whether to reduce the memory footprint of the `rpart` trees by eliminating non-essential elements from the fits. It is adviced to set this to `TRUE` for large values of `ntrees`.
+
+The function returns an object of class `rforest` which is a list containing the following elements:
+
++ `trees`: list of length equal to `ntrees`, containing the individual `rpart` trees in the forest.
++ `oob_error`: numeric vector of length equal to `ntrees`, containing the OOB error at each iteration (if `track_oob = TRUE`).
++ `data`: the training `data` (if `keep_data = TRUE`).
+
+### Make predictions
+Predictions from a random forest can be retrieved via the generic `predict` function, which will call `predict.rforest(object, newdata)` with arguments:
+
++ `object`: fitted model object from the class `rforest`.
++ `newdata`: data frame containing the observations to predict. This argument can only be missing when the random forest in `object` is trained with `keep_data = TRUE`. In that case, the original training data will be used to generate predictions.
+
+The function returns a numeric vector containing a prediction for each observation. A majority vote among individual trees is taken for a binary classification forest, while the predictions of the individual trees are averaged for normal, poisson, gamma and lognormal regression forests.
+
+### Classification forest to model/predict the occurrence of a claim
+
+
+### Poisson regression forest to model/predict claim numbers
+
+
+### Gamma regression forest to model/predict the claim amounts
+
+
+## Assessing the importance of each variable
