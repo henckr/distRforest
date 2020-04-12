@@ -1,6 +1,6 @@
 Package: distRforest
 Title: Distribution-based Random Forest
-Version: 1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "Roel",
            family = "Henckaerts",
