@@ -5,7 +5,7 @@
 #'
 #' @param object fitted model object from the class \code{rforest}.
 #' @return data frame with one row for each variable and four columns:
-#'   \describe{\item{variable}{the name of the variable.} \item{importance}{the
+#'   \describe{ \item{variable}{the name of the variable.} \item{importance}{the
 #'   average importance score over all the individual trees.}
 #'   \item{scale_sum}{scaled scores which sum to one.} \item{scale_max}{scaled
 #'   scores such that the maximum value is equal to one.}}

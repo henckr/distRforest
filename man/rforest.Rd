@@ -29,7 +29,7 @@ exist, see \code{method = 'poisson'} and \code{method = 'exp'} below.}
 \item{data}{data frame containing the training data observations.}
 
 \item{method}{string specifying the type of forest to build. Options are:
-\describe{\item{'class'}{classification forest (OOB error tracking only
+\describe{ \item{'class'}{classification forest (OOB error tracking only
 implemented for binary classification).} \item{'anova'}{standard regression
 forest with a squared error loss.} \item{'poisson'}{poisson regression
 forest for count data. The left-hand-side of \code{formula} can be
@@ -60,7 +60,7 @@ built on randomly sampled data of size \code{subsample * nrow(data)}.}
 \item{track_oob}{boolean to indicate whether the out-of-bag errors should be
 tracked (TRUE) or not (FALSE). This option is not implemented for
 \code{method = 'exp'} or multi-class classification. For the other methods,
-these errors are tracked:  \describe{\item{'class'}{Matthews correlation
+these errors are tracked:  \describe{ \item{'class'}{Matthews correlation
 coefficient for binary classification.} \item{'anova'}{mean squared error.}
 \item{'poisson'}{Poisson deviance.} \item{'gamma'}{gamma deviance.}
 \item{'lognormal'}{mean squared error.}} All these errors are evaluated in
@@ -75,7 +75,7 @@ is adviced to set this to \code{TRUE} for large values of \code{ntrees}.}
 }
 \value{
 object of the class \code{rforest}, which is a list containing the
-  following elements: \describe{\item{trees}{list of length equal to
+  following elements: \describe{ \item{trees}{list of length equal to
   \code{ntrees}, containing the individual \code{rpart} trees.}
   \item{oob_error}{numeric vector of length equal to \code{ntrees},
   containing the OOB error at each iteration (if \code{track_oob = TRUE}).}
