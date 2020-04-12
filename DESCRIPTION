@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "roel.henckaerts@kuleuven.be")
 Description: Extension of the rpart package with added loss functions and random forest functionality.
-URL: https://github.com/henckr/distRforest
+URL: https://henckr.github.io/distRforest/, https://github.com/henckr/distRforest
 License: GPL-2 | GPL-3
 Encoding: UTF-8
 LazyData: yes
@@ -22,3 +22,4 @@ Suggests:
     rmarkdown
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
+BugReports: http://github.com/henckr/distRforest/issues
