@@ -85,6 +85,7 @@ Miscellaneous
 
 -   vignettes/
     -   remove original `rpart` vignettes in the `distRforest` package
+    -   add vignette on the use of `distRforest` with examples for classification, Poisson and gamma regression
 -   tests/
     -   remove original `rpart` tests in the `distRforest` package
     -   test-distributions.R: test the `method = 'gamma'` and `method = 'lognormal'` options added to `rpart(...)`

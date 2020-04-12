@@ -136,6 +136,7 @@ oob_df <- data.frame('iteration' = seq_len(length(rf_class[['oob_error']])),
                      'oob_error' = rf_class[['oob_error']])
 ggplot(oob_df, aes(x = iteration, y = oob_error)) + geom_point()
 ```
+
 *Sidenote: Matthews correlation coefficient is chosen because this measure takes into account all four elements of the confusion matrix. Measures like accuracy, precision, recall or the F1 score ignore at least one of them.*
 
 Predictions from the random forest can be compared to the true values to assess performance. A reasonable amount of observations are classified falsely, but this is likely driven by the limited number of iterations and variables involved to model claim occurrence. Note that there is no need to specify `newdata` in `predict` as `keep_data = TRUE` in `rforest`. If `keep_data = FALSE` then `newdata = ausprivauto0405_balanced` is needed.
