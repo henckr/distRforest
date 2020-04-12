@@ -9,7 +9,8 @@
 }
 \usage{
 rpart(formula, data, weights, subset, na.action = na.rpart, method,
-      model = FALSE, x = FALSE, y = TRUE, parms, control, cost, \dots)
+      model = FALSE, x = FALSE, y = TRUE, parms, control, cost,
+      ncand, seed, redmem = FALSE, \dots)
 }
 \arguments{
   \item{formula}{a \link{formula}, with a response but no interaction
@@ -29,9 +30,9 @@ rpart(formula, data, weights, subset, na.action = na.rpart, method,
     \code{y} is missing, but keeps those in which one or more predictors
     are missing.}
   
-  \item{method}{one of \code{"anova"}, \code{"poisson"}, \code{"class"}
-    or \code{"exp"}.  If \code{method} is missing then the routine tries
-    to make an intelligent guess.
+  \item{method}{one of \code{"anova"}, \code{"poisson"}, \code{"class"},
+    \code{"exp"}, \code{"gamma"} or \code{"lognormal"}.  If \code{method} 
+    is missing then the routine tries to make an intelligent guess.
     If \code{y} is a survival object, then \code{method = "exp"} is assumed,
     if \code{y} has 2 columns then \code{method = "poisson"} is assumed,
     if \code{y} is a factor then \code{method = "class"} is assumed,
@@ -76,6 +77,16 @@ rpart(formula, data, weights, subset, na.action = na.rpart, method,
     be applied when considering splits, so the improvement on splitting
     on a variable is divided by its cost in deciding which split to
     choose.}
+    
+  \item{ncand}{integer specifying the number of randomly chosen variable 
+    candidates to consider at each node to find the optimal split.}
+  
+  \item{seed}{seed for the random number generator which chooses the
+    \code{ncand} variable split candidates.}
+  
+  \item{redmem}{boolean whether to reduce the memory footprint of the 
+    fitted \code{rpart} tree by eliminating non-essential elements from 
+    the fit (mainly needed in a random forest).}
   
   \item{\dots}{arguments to \code{\link{rpart.control}} may also be
     specified in the call to \code{rpart}.  They are checked against the
