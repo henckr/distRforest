@@ -1,0 +1,16 @@
+destination: docs
+
+reference:
+- title: 'Build a random forest'
+- contents:
+  - rforest
+- title: 'Predict a random forest'
+- contents:
+  - predict.rforest
+- title: 'Variable importance in a random forest'
+- contents:
+  - importance_rforest
+- title: 'Build a decision tree'
+- contents:
+  - rpart
+  - rpart.control

@@ -3,3 +3,6 @@
 ^Changes_rpart.Rmd$
 ^Changes_rpart.md$
 ^R/hex_logo\.R$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
