@@ -2,6 +2,9 @@
 ^\.Rproj\.user$
 ^Changes_rpart.Rmd$
 ^Changes_rpart.md$
+^forest\.png$
+^forest\.xcf$
+^forest_dist\.png$
 ^R/hex_logo\.R$
 ^_pkgdown\.yml$
 ^docs$

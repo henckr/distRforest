@@ -3,6 +3,9 @@ inst/doc
 
 *.Rproj
 R/hex_logo.R
+forest.png
+forest.xcf
+forest_dist.png
 vignettes/*_cache/
 vignettes/*_files/
 vignettes/*.R
