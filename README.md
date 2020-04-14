@@ -1,4 +1,4 @@
-# The `distRforest` package
+# The `distRforest` package <img src="man/figures/distRforest_hex.png" alt="" align="right" height="200">
 
 This package contains an `R` implementation for random forests with distribution-based loss functions.
 
