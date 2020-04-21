@@ -120,15 +120,15 @@
     <p>The group of loss functions used to calculate OOB errors.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>error_funcs</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>method</span>)
+    <pre class="usage"><span class='fu'>error_funcs</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>ytrue</span>)), <span class='no'>method</span>)
 
-<span class='fu'>dev_poiss</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>dev_poiss</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='no'>wcase</span>)
 
-<span class='fu'>dev_gamma</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>dev_gamma</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='no'>wcase</span>)
 
-<span class='fu'>wgt_mse</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>wgt_mse</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='no'>wcase</span>)
 
-<span class='fu'>mcc</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='kw'>wcase</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+<span class='fu'>mcc</span>(<span class='no'>ytrue</span>, <span class='no'>ypred</span>, <span class='no'>wcase</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

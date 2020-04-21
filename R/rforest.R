@@ -75,8 +75,20 @@ rforest <- function(formula, data, method, weights = NULL, parms = NULL, control
   
   # Initialize components to track the OOB error
   if (track_oob) {
-    oob_err <- rep(NA, ntrees)
-    pred_vec <- rep(0, nrow(data))
+    oob_err <- rep(NA, ntrees) # OOB error
+    pred_vec <- rep(0, nrow(data)) # OOB predictions
+    freq_oob <- rep(0, nrow(data)) # OOB count
+    # Use the formula to extract the true values of the response variable
+    lhs_form <- as.character(formula[[2]])
+    if (length(lhs_form) == 1) {
+      true_resp <- data[, lhs_form]
+    } else if (method == 'poisson' & length(lhs_form) == 3 & lhs_form[1] == 'cbind') {
+      # Poisson tree can be specified via cbind in the formula lhs so we need to deal with this case separately
+      true_resp <- data[, lhs_form[3]]
+    } else {
+      stop('Multiple elements are found in the lhs of the formula, but it is not the cbind construct for Poisson trees. Do not know how to handle this.
+           Possible issue: a function is applied to the response in the formula. Please refrain from doing this, but rather add the transformed variable to the data.')
+    }
   }
   
   # Build the idividual trees
@@ -91,27 +103,24 @@ rforest <- function(formula, data, method, weights = NULL, parms = NULL, control
     
     # Track the OOB error
     if (track_oob) {
-      # Calculate aggregate predictions for random forest at current iteration (mean for regression, majority vote for classification)
-      pred_vec <- ((rf_id - 1) * pred_vec / rf_id) + (predict(rf_fit[[rf_id]], newdata = data, type = 'vector') / rf_id)
-      # Select the predictions for the OOB observations
+      
+      # Update the frequency count and predictions for the OOB observations
       oob_obs <- setdiff(seq_len(nrow(data)), indx_smpl)
-      pred_oob <- pred_vec[oob_obs]
-      # Use the formula to extract the true values of the response variable
-      lhs_form <- as.character(formula[[2]])
-      if (length(lhs_form) == 1) {
-        true_oob <- data[oob_obs, lhs_form]
-      } else if (method == 'poisson' & length(lhs_form) == 3 & lhs_form[1] == 'cbind') {
-        # Poisson tree can be specified via cbind in the formula lhs so we need to deal with this case separately
-        true_oob <- data[oob_obs, lhs_form[3]]
-        pred_oob <- pred_oob * data[oob_obs, lhs_form[2]] # take the observation time into account in the prediction
-      } else {
-        stop('Multiple elements are found in the lhs of the formula, but it is not the cbind construct for Poisson trees. Do not know how to handle this.
-             Possible issue: a function is applied to the response in the formula. Please refrain from doing this, but rather add the transformed variable to the data.')
-      }
+      freq_oob[oob_obs] <- freq_oob[oob_obs] + 1
+      pred_vec[oob_obs] <- pred_vec[oob_obs] + predict(rf_fit[[rf_id]], newdata = data[oob_obs, ], type = 'vector')
+      
+      # Calculate current OOB predictions
+      oob_pred <- pred_vec / freq_oob
+      
+      if (method == 'poisson' & length(lhs_form) == 3 & lhs_form[1] == 'cbind') {
+        # Take the observation time into account in the prediction
+        oob_pred <- oob_pred * data[, lhs_form[2]] 
+      } 
+      
       # Calculate the (weighted) OOB error
       oob_err[rf_id] <- switch(as.character(is.null(substitute(weights))),
-                               'TRUE' = error_funcs(ytrue = true_oob, ypred = pred_oob, method = method),
-                               'FALSE' = error_funcs(ytrue = true_oob, ypred = pred_oob, wcase = data[oob_obs, as.character(substitute(weights))], method = method))
+                               'TRUE' = error_funcs(ytrue = true_resp, ypred = oob_pred, method = method),
+                               'FALSE' = error_funcs(ytrue = true_resp, ypred = oob_pred, wcase = data[, as.character(substitute(weights))], method = method))
     }
   }
   
@@ -128,5 +137,19 @@ rforest <- function(formula, data, method, weights = NULL, parms = NULL, control
   return(rf_obj)  
 }
 
-
-
+# library(CASdatasets)
+# 
+# control <- rpart.control(minsplit = 20, cp = 0, xval = 0, maxdepth = 5)
+# ncand <- 3 ; ntrees <- 5 ; subsample <- 0.5
+# # Fit the random forest
+# set.seed(54321)
+# formula = cbind(Exposure, ClaimNb) ~ VehValue + VehAge + VehBody + Gender + DrivAge
+# data(ausprivauto0405)
+# data = ausprivauto0405
+# method = 'poisson'
+# weights = NULL
+# parms = list('shrink' = 10000000)
+# track_oob = TRUE
+# keep_data = FALSE
+# red_mem = TRUE
+# 

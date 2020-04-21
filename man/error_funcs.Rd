@@ -8,15 +8,15 @@
 \alias{mcc}
 \title{Error functions}
 \usage{
-error_funcs(ytrue, ypred, wcase = 1, method)
+error_funcs(ytrue, ypred, wcase = rep(1, length(ytrue)), method)
 
-dev_poiss(ytrue, ypred, wcase = 1)
+dev_poiss(ytrue, ypred, wcase)
 
-dev_gamma(ytrue, ypred, wcase = 1)
+dev_gamma(ytrue, ypred, wcase)
 
-wgt_mse(ytrue, ypred, wcase = 1)
+wgt_mse(ytrue, ypred, wcase)
 
-mcc(ytrue, ypred, wcase = 1)
+mcc(ytrue, ypred, wcase)
 }
 \arguments{
 \item{ytrue}{numeric vector of the true target values.}
